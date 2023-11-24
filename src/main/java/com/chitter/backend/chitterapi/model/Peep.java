@@ -20,12 +20,12 @@ public class Peep {
     @JsonProperty("username")
     @NotEmpty(message = "Peep must have a username")
     private String username;
-    @JsonProperty("content")
+    @JsonProperty("peepContent")
     @NotEmpty(message = "Peep must have content")
-    private String content;
-    @JsonProperty("date")
+    private String peepContent;
+    @JsonProperty("dateCreated")
     @NotEmpty(message = "Peep must have a date created")
-    private String date;
+    private String dateCreated;
 
     public String get_id() {
         return _id;
@@ -57,19 +57,19 @@ public class Peep {
         this.username = username;
     }
 
-    public String getContent() {
-        return content;
+    public String getPeepContent() {
+        return peepContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setPeepContent(String peepContent) {
+        this.peepContent = peepContent;
     }
 
-    public String getDate() {
-        return date;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

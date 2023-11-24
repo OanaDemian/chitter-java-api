@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.chitter.backend</groupId>
-	<artifactId>java-api</artifactId>
+	<artifactId>chitter-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>java-api</name>
 	<description>Demo project for Spring Boot</description>

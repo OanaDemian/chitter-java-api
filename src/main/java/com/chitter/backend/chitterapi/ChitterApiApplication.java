@@ -9,5 +9,4 @@ public class ChitterApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ChitterApiApplication.class, args);
 	}
-
 }
