@@ -1,13 +1,13 @@
-package com.chitter.backend.javaapi;
+package com.chitter.backend.chitterapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JavaApiApplication {
+public class ChitterApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JavaApiApplication.class, args);
+		SpringApplication.run(ChitterApiApplication.class, args);
 	}
 
 }
