@@ -15,4 +15,9 @@ public class PeepServices {
     public List<Peep> getAllPeeps() {
         return peepRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreated"));
     }
+
+    public Peep addPeep(Peep peep) {
+        return peepRepository.save(peep);
+    }
+
 }

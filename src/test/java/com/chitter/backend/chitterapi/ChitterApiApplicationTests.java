@@ -11,12 +11,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.chitter.backend.chitterapi.helpers.JsonFileReader.fileToObjectList;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,6 +29,8 @@ class ChitterApiApplicationTests {
 	private MockMvc mockMvc;
 	private List<Peep> peeps = fileToObjectList();
 	private Peep testPeep = new Peep();
+	private String requestBody;
+
 
 
 	@BeforeEach
@@ -39,7 +43,7 @@ class ChitterApiApplicationTests {
 	class GetRequestTests {
 		@Nested
 		@DisplayName("GET peeps tests")
-		class GetAll {
+		class GetAllPeeps {
 
 			@Test
 			@DisplayName("Should return OK Http status code - regardless of how many peeps are found")
@@ -94,13 +98,9 @@ class ChitterApiApplicationTests {
 					testPeep1.set_id("5c9e51c24c6ee53ff09d5d03");
 					newPeeps.add(testPeep1);
 					TestMongoConfig.repopulateCollection(newPeeps);
-					System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-					System.out.println(peeps.size());
-					System.out.println(peeps);
 					mockMvc.perform(get("/peeps"))
 							.andExpect(jsonPath("$[2].dateCreated", Matchers.is(peeps.get(0).getDateCreated())))
 							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(newDate)));
-
 				}
 			}
 			@Nested
@@ -113,6 +113,110 @@ class ChitterApiApplicationTests {
 					mockMvc.perform(get("/peeps"))
 							.andExpect(jsonPath("$", hasSize(0)));
 				}
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("Integrated POST Request Tests")
+	class PostRequestTests {
+
+		@Nested
+		@DisplayName("Valid new peep tests")
+		class ValidNewPeepTests {
+
+			@BeforeEach
+			public void makeRequestBody() {
+				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
+						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
+						"\",\"username\": \"" + peeps.get(0).getUsername() +
+						"\",\"name\": \"" + peeps.get(0).getName() +
+						"\",\"userId\": \"" + peeps.get(0).getUserId() +
+						"\"}";
+			}
+
+			@Test
+			@DisplayName("Should return status 201 when a valid peep is submitted")
+			public void shouldReturn201StatusWhenValidPeepSubmitted() throws Exception {
+				TestMongoConfig.clearCollection();
+				mockMvc.perform(MockMvcRequestBuilders
+								.post("/peeps")
+								.content(requestBody)
+								.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isCreated());
+			}
+
+			@Test
+			@DisplayName("Should return the valid peep submitted")
+			public void shouldReturnTheValidPeepSubmitted() throws Exception {
+				mockMvc.perform(MockMvcRequestBuilders
+								.post("/peeps")
+								.content(requestBody)
+								.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(jsonPath("$.peepContent", is(peeps.get(0).getPeepContent())))
+						.andExpect(jsonPath("$.dateCreated", is(peeps.get(0).getDateCreated())))
+						.andExpect(jsonPath("$.username", is(peeps.get(0).getUsername())))
+						.andExpect(jsonPath("$._id", is(not(emptyString()))));
+			}
+		}
+
+		@Nested
+		@DisplayName("Invalid new peep tests")
+		class InvalidNewPeepTests {
+
+			@Test
+			@DisplayName("Should return a 400 status when no peep content provided")
+			public void shouldReturn400WhenNoContent() throws Exception {
+				requestBody = "{\"peepContent\": \"" + "" +
+						"\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
+						"\",\"username\": \"" + peeps.get(0).getUsername() +
+						"\",\"name\": \"" + peeps.get(0).getName() +
+						"\",\"userId\": \"" + peeps.get(0).getUserId() +
+						"\"}";
+				mockMvc.perform(MockMvcRequestBuilders
+								.post("/peeps")
+								.content(requestBody)
+								.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isBadRequest());
+			}
+
+			@Test
+			@DisplayName("Should return a 400 status when no date created provided")
+			public void shouldReturn400WhenNoDateCreated() throws Exception {
+				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
+						"\"dateCreated\": \"" + "" +
+						"\",\"username\": \"" + peeps.get(0).getUsername() +
+						"\",\"name\": \"" + peeps.get(0).getName() +
+						"\",\"userId\": \"" + peeps.get(0).getUserId() +
+						"\"}";
+				System.out.println(requestBody);
+				mockMvc.perform(MockMvcRequestBuilders
+								.post("/peeps")
+								.content(requestBody)
+								.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isBadRequest());
+			}
+//
+			@Test
+			@DisplayName("Should return a 400 status when no userId is provided")
+			public void shouldReturn400WhenNoUserIdProvided() throws Exception {
+//				requestBody = "{\"peepContent\": \"" + "Peep peep from Mario" +
+//						"\",\"dateCreated\": \"" + "2022-02-06T20:20:13Z" +
+//						"\",\"username\": \"" + "Mario1" +
+//						"\",\"name\": \"" + "Mario Mario" +
+//						"\",\"userId\": \"" + "" +
+//						"\"}";
+				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
+						"\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
+						"\",\"username\": \"" + peeps.get(0).getUsername() +
+						"\",\"name\": \"" + peeps.get(0).getName() +
+						"\",\"userId\": \"" + "" +
+						"\"}";
+				mockMvc.perform(MockMvcRequestBuilders
+								.post("/peeps")
+								.content(requestBody)
+								.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isBadRequest());
 			}
 		}
 	}
