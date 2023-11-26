@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.chitter.backend.chitterapi.helpers.JsonFileReader.fileToObjectList;
+import static com.chitter.backend.chitterapi.helpers.JsonFileReader.fileToPeepObjectList;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.emptyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,15 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ChitterApiApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
-	private List<Peep> peeps = fileToObjectList();
+	private List<Peep> peeps = fileToPeepObjectList();
 	private Peep testPeep = new Peep();
 	private String requestBody;
 
 
 
 	@BeforeEach
-	void clearCollection() {
-		TestMongoConfig.clearCollection();
+	void clearPeepsCollection() {
+		TestMongoConfig.clearPeepsCollection();
 	}
 
 	@Nested
@@ -64,8 +64,8 @@ class ChitterApiApplicationTests {
 			class WhenPeepsFound {
 
 				@BeforeEach
-				public void repopulateCollection() {
-					TestMongoConfig.repopulateCollection(peeps);
+				public void repopulatePeepsCollection() {
+					TestMongoConfig.repopulatePeepsCollection(peeps);
 				}
 
 				@Test
@@ -97,7 +97,7 @@ class ChitterApiApplicationTests {
 					testPeep1.setUserId("64e0f63c5f8069dbfd030ae7");
 					testPeep1.set_id("5c9e51c24c6ee53ff09d5d03");
 					newPeeps.add(testPeep1);
-					TestMongoConfig.repopulateCollection(newPeeps);
+					TestMongoConfig.repopulatePeepsCollection(newPeeps);
 					mockMvc.perform(get("/peeps"))
 							.andExpect(jsonPath("$[2].dateCreated", Matchers.is(peeps.get(0).getDateCreated())))
 							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(newDate)));
@@ -138,7 +138,7 @@ class ChitterApiApplicationTests {
 			@Test
 			@DisplayName("Should return status 201 when a valid peep is submitted")
 			public void shouldReturn201StatusWhenValidPeepSubmitted() throws Exception {
-				TestMongoConfig.clearCollection();
+				TestMongoConfig.clearPeepsCollection();
 				mockMvc.perform(MockMvcRequestBuilders
 								.post("/peeps")
 								.content(requestBody)
@@ -165,10 +165,10 @@ class ChitterApiApplicationTests {
 		class InvalidNewPeepTests {
 
 			@Test
-			@DisplayName("Should return a 400 status when no peep content provided")
-			public void shouldReturn400WhenNoContent() throws Exception {
-				requestBody = "{\"peepContent\": \"" + "" +
-						"\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
+			@DisplayName("Should return a 400 status when peep content is empty")
+			public void shouldReturn400WhenEmptyPeepContent() throws Exception {
+				requestBody = "{\"peepContent\": \"\"" +
+						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
 						"\",\"username\": \"" + peeps.get(0).getUsername() +
 						"\",\"name\": \"" + peeps.get(0).getName() +
 						"\",\"userId\": \"" + peeps.get(0).getUserId() +
@@ -181,10 +181,10 @@ class ChitterApiApplicationTests {
 			}
 
 			@Test
-			@DisplayName("Should return a 400 status when no date created provided")
-			public void shouldReturn400WhenNoDateCreated() throws Exception {
+			@DisplayName("Should return a 400 status when date created is empty")
+			public void shouldReturn400WhenEmptyDateCreated() throws Exception {
 				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
-						"\"dateCreated\": \"" + "" +
+						"\",\"dateCreated\": \"\"" +
 						"\",\"username\": \"" + peeps.get(0).getUsername() +
 						"\",\"name\": \"" + peeps.get(0).getName() +
 						"\",\"userId\": \"" + peeps.get(0).getUserId() +
@@ -196,21 +196,15 @@ class ChitterApiApplicationTests {
 								.contentType(MediaType.APPLICATION_JSON))
 						.andExpect(status().isBadRequest());
 			}
-//
+
 			@Test
-			@DisplayName("Should return a 400 status when no userId is provided")
-			public void shouldReturn400WhenNoUserIdProvided() throws Exception {
-//				requestBody = "{\"peepContent\": \"" + "Peep peep from Mario" +
-//						"\",\"dateCreated\": \"" + "2022-02-06T20:20:13Z" +
-//						"\",\"username\": \"" + "Mario1" +
-//						"\",\"name\": \"" + "Mario Mario" +
-//						"\",\"userId\": \"" + "" +
-//						"\"}";
+			@DisplayName("Should return a 400 status when userId is empty")
+			public void shouldReturn400WhenEmptyUserId() throws Exception {
 				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
-						"\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
+						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
 						"\",\"username\": \"" + peeps.get(0).getUsername() +
 						"\",\"name\": \"" + peeps.get(0).getName() +
-						"\",\"userId\": \"" + "" +
+						"\",\"userId\": \"\"" +
 						"\"}";
 				mockMvc.perform(MockMvcRequestBuilders
 								.post("/peeps")
@@ -221,4 +215,3 @@ class ChitterApiApplicationTests {
 		}
 	}
 }
-

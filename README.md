@@ -136,6 +136,21 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- PLANNING ROUTES -->
+## End Point Responsabilities
+/peeps
+
+| Route Name                       | URL Path   | HTTP Method | Purpose                      |
+| -------------------------------- | ---------- | ----------- | ---------------------------- |
+| Index                            | /          | GET         | Show signup page             |
+| All                              | /peeps     | GET         | Display all peeps            |
+| New                              | /peeps/new | GET         | Show form for new peep       |
+| Create                           | /peeps     | POST        | Creates new peep             |
+| Show                             | /peeps/:id | GET         | Shows one peep (for replies) |
+| Edit, Update, Delete - not using |            |
+| Login                            | /login     | GET         | Display login page           |
+| Login user                       | /login     | POST        | Login user and redirect      |
+| Sign up user                     | /signup    | POST        | Sign up user and redirect    |
 
 
 <!-- CONTRIBUTING -->
