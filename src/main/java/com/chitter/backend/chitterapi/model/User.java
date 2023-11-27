@@ -31,7 +31,7 @@ public class User {
     private String email;
 
     @JsonProperty("password")
-//    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
     @NotEmpty(message = "Users must have a password")
     private String password;
     public String get_id() {

@@ -1,4 +1,5 @@
 package com.chitter.backend.chitterapi.repositories;
+
 import com.chitter.backend.chitterapi.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
