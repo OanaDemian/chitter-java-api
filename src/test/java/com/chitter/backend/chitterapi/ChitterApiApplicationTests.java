@@ -1,11 +1,9 @@
 package com.chitter.backend.chitterapi;
 
 import com.chitter.backend.chitterapi.model.Peep;
+import com.chitter.backend.chitterapi.model.User;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.chitter.backend.chitterapi.helpers.JsonFileReader.fileToPeepObjectList;
+import static com.chitter.backend.chitterapi.helpers.JsonFileReader.fileToUserObjectList;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.emptyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,7 +27,7 @@ class ChitterApiApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 	private List<Peep> peeps = fileToPeepObjectList();
-	private Peep testPeep = new Peep();
+	List <User> users = fileToUserObjectList();
 	private String requestBody;
 
 
@@ -87,20 +86,17 @@ class ChitterApiApplicationTests {
 				@Test
 				@DisplayName("Should return the peeps in reverse chronological order")
 				public void shouldReturnListOfPeepsInReverseChronologicalOrder() throws Exception {
-					String newDate = "2056-02-06T20:20:13Z";
 					List<Peep> newPeeps = new ArrayList<Peep>();
-					Peep testPeep1 = new Peep();
-					testPeep1.setPeepContent("Peep peep");
-					testPeep1.setDateCreated(newDate);
-					testPeep1.setName("Stacey");
-					testPeep1.setUsername("Stacey1");
-					testPeep1.setUserId("64e0f63c5f8069dbfd030ae7");
-					testPeep1.set_id("5c9e51c24c6ee53ff09d5d03");
-					newPeeps.add(testPeep1);
+					User user = new User();
+					user.set_id("64e0f63c5f8069dbfd030ae7");
+					user.setName("Stacey");
+					user.setUsername("Stacey1");
+					Peep testPeep = new Peep(user, "Peep peep");
+					newPeeps.add(testPeep);
 					TestMongoConfig.repopulatePeepsCollection(newPeeps);
 					mockMvc.perform(get("/peeps"))
 							.andExpect(jsonPath("$[2].dateCreated", Matchers.is(peeps.get(0).getDateCreated())))
-							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(newDate)));
+							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(testPeep.getDateCreated())));
 				}
 			}
 			@Nested
@@ -124,15 +120,20 @@ class ChitterApiApplicationTests {
 		@Nested
 		@DisplayName("Valid new peep tests")
 		class ValidNewPeepTests {
+			@BeforeEach
+			public void repopulateUsersCollection() {
+				TestMongoConfig.repopulateUsersCollection(users);
+			}
 
 			@BeforeEach
 			public void makeRequestBody() {
 				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
-						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
-						"\",\"username\": \"" + peeps.get(0).getUsername() +
-						"\",\"name\": \"" + peeps.get(0).getName() +
-						"\",\"userId\": \"" + peeps.get(0).getUserId() +
+						"\",\"username\": \"" + users.get(0).getUsername() +
 						"\"}";
+			}
+            @AfterEach
+			public void clearUsersCollection() {
+				TestMongoConfig.clearUsersCollection();
 			}
 
 			@Test
@@ -154,8 +155,7 @@ class ChitterApiApplicationTests {
 								.content(requestBody)
 								.contentType(MediaType.APPLICATION_JSON))
 						.andExpect(jsonPath("$.peepContent", is(peeps.get(0).getPeepContent())))
-						.andExpect(jsonPath("$.dateCreated", is(peeps.get(0).getDateCreated())))
-						.andExpect(jsonPath("$.username", is(peeps.get(0).getUsername())))
+						.andExpect(jsonPath("$.username", is(users.get(0).getUsername())))
 						.andExpect(jsonPath("$._id", is(not(emptyString()))));
 			}
 		}
@@ -168,43 +168,7 @@ class ChitterApiApplicationTests {
 			@DisplayName("Should return a 400 status when peep content is empty")
 			public void shouldReturn400WhenEmptyPeepContent() throws Exception {
 				requestBody = "{\"peepContent\": \"\"" +
-						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
 						"\",\"username\": \"" + peeps.get(0).getUsername() +
-						"\",\"name\": \"" + peeps.get(0).getName() +
-						"\",\"userId\": \"" + peeps.get(0).getUserId() +
-						"\"}";
-				mockMvc.perform(MockMvcRequestBuilders
-								.post("/peeps")
-								.content(requestBody)
-								.contentType(MediaType.APPLICATION_JSON))
-						.andExpect(status().isBadRequest());
-			}
-
-			@Test
-			@DisplayName("Should return a 400 status when date created is empty")
-			public void shouldReturn400WhenEmptyDateCreated() throws Exception {
-				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
-						"\",\"dateCreated\": \"\"" +
-						"\",\"username\": \"" + peeps.get(0).getUsername() +
-						"\",\"name\": \"" + peeps.get(0).getName() +
-						"\",\"userId\": \"" + peeps.get(0).getUserId() +
-						"\"}";
-				System.out.println(requestBody);
-				mockMvc.perform(MockMvcRequestBuilders
-								.post("/peeps")
-								.content(requestBody)
-								.contentType(MediaType.APPLICATION_JSON))
-						.andExpect(status().isBadRequest());
-			}
-
-			@Test
-			@DisplayName("Should return a 400 status when userId is empty")
-			public void shouldReturn400WhenEmptyUserId() throws Exception {
-				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
-						"\",\"dateCreated\": \"" + peeps.get(0).getDateCreated() +
-						"\",\"username\": \"" + peeps.get(0).getUsername() +
-						"\",\"name\": \"" + peeps.get(0).getName() +
-						"\",\"userId\": \"\"" +
 						"\"}";
 				mockMvc.perform(MockMvcRequestBuilders
 								.post("/peeps")

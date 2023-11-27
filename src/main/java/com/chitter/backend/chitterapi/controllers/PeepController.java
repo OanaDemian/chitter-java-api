@@ -1,6 +1,7 @@
 package com.chitter.backend.chitterapi.controllers;
 
 import com.chitter.backend.chitterapi.model.Peep;
+import com.chitter.backend.chitterapi.payloads.requests.NewPeepRequest;
 import com.chitter.backend.chitterapi.services.PeepServices;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -30,8 +31,8 @@ public class PeepController {
 
     @PostMapping(value="/peeps")
     @ResponseStatus(HttpStatus.CREATED)
-    public Peep addPeep(@Valid @RequestBody Peep peep) {
+    public Peep addPeep(@Valid @RequestBody NewPeepRequest newPeepRequest) {
         logger.info("Saving peep");
-        return peepServices.addPeep(peep);
+        return peepServices.addPeep(newPeepRequest);
     }
 }

@@ -12,24 +12,28 @@ import java.util.Set;
 @Document("peeps")
 public class Peep {
     @Id
-    @JsonProperty("_id")
     private String _id;
-    @JsonProperty("userId")
-    @NotEmpty(message = "Peep must have a userId")
+
     private String userId;
 
-    @JsonProperty("name")
-    @NotEmpty(message = "Peep must have a name")
     private String name;
-    @JsonProperty("username")
-    @NotEmpty(message = "Peep must have a username")
+
     private String username;
-    @JsonProperty("peepContent")
-    @NotEmpty(message = "Peep must have content")
+
     private String peepContent;
-    @JsonProperty("dateCreated")
-    @NotEmpty(message = "Peep must have a date created")
+
     private String dateCreated;
+
+    public Peep(){
+
+    }
+    public Peep(User user, String content) {
+        this.setUsername(user.getUsername());
+        this.setName(user.getName());
+        this.setUserId(user.get_id());
+        this.setPeepContent(content);
+        this.setDateCreated(java.time.LocalDateTime.now().toString());
+    }
 
     public String get_id() {
         return _id;
