@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ChitterApiApplicationTests {
+class PeepControllerIntegrationTests {
 	@Autowired
 	private MockMvc mockMvc;
 	private List<Peep> peeps = fileToPeepObjectList();
@@ -131,7 +131,7 @@ class ChitterApiApplicationTests {
 						"\",\"username\": \"" + users.get(0).getUsername() +
 						"\"}";
 			}
-            @AfterEach
+            @BeforeEach
 			public void clearUsersCollection() {
 				TestMongoConfig.clearUsersCollection();
 			}

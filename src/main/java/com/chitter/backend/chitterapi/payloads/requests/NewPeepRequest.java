@@ -2,9 +2,6 @@ package com.chitter.backend.chitterapi.payloads.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document("NewPeepRequest")
 
 public class NewPeepRequest {
     @JsonProperty("username")

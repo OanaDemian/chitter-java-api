@@ -76,7 +76,6 @@ Follow these instructions to set up your project locally.
 This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
-
   ```
 
 ### Installation
@@ -87,13 +86,12 @@ $ git clone https://github.com/<YOUR GITHUB USERNAME>/chitter-java-api.git && cd
 ```
 2. Install Maven dependencies
    ```sh
-
    ```
 3. Connect to the database:
    ```sh
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+    <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ENHANCEMENTS -->
 ## Future enhancements
