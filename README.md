@@ -18,8 +18,6 @@ This is the backend API to Chitter, a social media application, written in Java,
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -73,9 +71,11 @@ Follow these instructions to set up your project locally.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+You need to have **Maven** and **MongoDB** installed. To check if they are installed, run:
+* 
   ```sh
+mongod --version
+mvn -v
   ```
 
 ### Installation
@@ -84,13 +84,22 @@ This is an example of how to list things you need to use the software and how to
 ```sh
 $ git clone https://github.com/<YOUR GITHUB USERNAME>/chitter-java-api.git && cd chitter-java-api
 ```
-2. Install Maven dependencies
+2. Install dependencies for Maven
    ```sh
+    mvn dependency:copy-dependencies
    ```
-3. Connect to the database:
+3. Start MongoDB Community Server
+4. Provide your database information in the application.properties file if you have a different setup. for now, it contains the following configuring connections:
    ```sh
+    server.port=4000
+    spring.data.mongodb.host=127.0.0.1
+    spring.data.mongodb.port=27017
+    spring.data.mongodb.database=chitter
    ```
-
+5. Quickly compile and run your application using the Spring Boot Maven plugin:
+    ```sh
+      mvn spring-boot:run
+    ```
     <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ENHANCEMENTS -->
