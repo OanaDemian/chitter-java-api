@@ -15,9 +15,9 @@ public class Peep {
 
     private String username;
 
-    private String peepContent;
+    private String content;
 
-    private String dateCreated;
+    private String date;
 
     public Peep(){
 
@@ -26,8 +26,8 @@ public class Peep {
         this.setUsername(user.getUsername());
         this.setName(user.getName());
         this.setUserId(user.get_id());
-        this.setPeepContent(content);
-        this.setDateCreated(java.time.LocalDateTime.now().toString());
+        this.setContent(content);
+        this.setDate(java.time.LocalDateTime.now().toString());
     }
 
     public String get_id() {
@@ -60,19 +60,19 @@ public class Peep {
         this.username = username;
     }
 
-    public String getPeepContent() {
-        return peepContent;
+    public String getContent() {
+        return content;
     }
 
-    public void setPeepContent(String peepContent) {
-        this.peepContent = peepContent;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getDateCreated() {
-        return dateCreated;
+    public String getDate() {
+        return date;
     }
 
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setDate(String date) {
+        this.date = date;
     }
 }

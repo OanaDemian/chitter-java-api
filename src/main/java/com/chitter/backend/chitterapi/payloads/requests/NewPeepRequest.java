@@ -8,15 +8,15 @@ public class NewPeepRequest {
     @NotEmpty(message = "Peep must have a username")
     private String username;
 
-    @JsonProperty("peepContent")
+    @JsonProperty("content")
     @NotEmpty(message = "Peep must have content")
-    private String peepContent;
+    private String content;
 
     public String getUsername() {
         return username;
     }
 
-    public String getPeepContent() {
-        return peepContent;
+    public String getContent() {
+        return content;
     }
 }

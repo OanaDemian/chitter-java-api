@@ -72,8 +72,8 @@ class PeepControllerIntegrationTests {
 				public void shouldReturnFoundPeepsAsJSONWithRightNumberOfPeeps() throws Exception {
 					mockMvc.perform(get("/peeps"))
 							.andExpect(jsonPath("$[0].username", Matchers.is(peeps.get(1).getUsername())))
-							.andExpect(jsonPath("$[0].peepContent", Matchers.is(peeps.get(1).getPeepContent())))
-							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(peeps.get(1).getDateCreated())));
+							.andExpect(jsonPath("$[0].content", Matchers.is(peeps.get(1).getContent())))
+							.andExpect(jsonPath("$[0].date", Matchers.is(peeps.get(1).getDate())));
 				}
 
 				@Test
@@ -95,8 +95,8 @@ class PeepControllerIntegrationTests {
 					newPeeps.add(testPeep);
 					TestMongoConfig.repopulatePeepsCollection(newPeeps);
 					mockMvc.perform(get("/peeps"))
-							.andExpect(jsonPath("$[2].dateCreated", Matchers.is(peeps.get(0).getDateCreated())))
-							.andExpect(jsonPath("$[0].dateCreated", Matchers.is(testPeep.getDateCreated())));
+							.andExpect(jsonPath("$[2].date", Matchers.is(peeps.get(0).getDate())))
+							.andExpect(jsonPath("$[0].date", Matchers.is(testPeep.getDate())));
 				}
 			}
 			@Nested
@@ -127,7 +127,7 @@ class PeepControllerIntegrationTests {
 
 			@BeforeEach
 			public void makeRequestBody() {
-				requestBody = "{\"peepContent\": \"" + peeps.get(0).getPeepContent() +
+				requestBody = "{\"content\": \"" + peeps.get(0).getContent() +
 						"\",\"username\": \"" + users.get(0).getUsername() +
 						"\"}";
 			}
@@ -154,7 +154,7 @@ class PeepControllerIntegrationTests {
 								.post("/peeps")
 								.content(requestBody)
 								.contentType(MediaType.APPLICATION_JSON))
-						.andExpect(jsonPath("$.peepContent", is(peeps.get(0).getPeepContent())))
+						.andExpect(jsonPath("$.content", is(peeps.get(0).getContent())))
 						.andExpect(jsonPath("$.username", is(users.get(0).getUsername())))
 						.andExpect(jsonPath("$._id", is(not(emptyString()))));
 			}
@@ -167,7 +167,7 @@ class PeepControllerIntegrationTests {
 			@Test
 			@DisplayName("Should return a 400 status when peep content is empty")
 			public void shouldReturn400WhenEmptyPeepContent() throws Exception {
-				requestBody = "{\"peepContent\": \"\"" +
+				requestBody = "{\"content\": \"\"" +
 						"\",\"username\": \"" + peeps.get(0).getUsername() +
 						"\"}";
 				mockMvc.perform(MockMvcRequestBuilders

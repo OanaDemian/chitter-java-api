@@ -21,13 +21,13 @@ public class PeepServices {
     @Autowired
     private UserRepository userRepository;
     public List<Peep> getAllPeeps() {
-        return peepRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreated"));
+        return peepRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
     }
 
     public Peep addPeep(NewPeepRequest newPeepRequest) {
         Optional<User> user = userRepository.findByUsername(newPeepRequest.getUsername());
         if (user.isPresent()) {
-            Peep peep = new Peep(user.get(), newPeepRequest.getPeepContent());
+            Peep peep = new Peep(user.get(), newPeepRequest.getContent());
             return peepRepository.save(peep);
         } else {
             throw new UsernameNotFoundException();

@@ -4,15 +4,15 @@
   "name": "Ken Doll",
   "userId": "64e1f621940287afd844b595",
   "username": "Ken",
-  "peepContent": "Ken is me. I too want to break free!",
-    "dateCreated": "2023-08-20T22:43:05.845406"
+  "content": "Ken is me. I too want to break free!",
+    "date": "2023-08-20T22:43:05.845406"
   },
   {
     "_id": "65f23cfd3cc2a4c4bf0266df",
     "name": "Barbie Doll",
     "userId": "64e215f1b1f422ef032a1cae",
     "username": "Barbie1",
-    "peepContent": "Hello Chitter!",
-    "dateCreated": "2023-08-21T22:43:05.228406"
+    "content": "Hello Chitter!",
+    "date": "2023-08-21T22:43:05.228406"
   }
 ]
